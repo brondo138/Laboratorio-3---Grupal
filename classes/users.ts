@@ -5,7 +5,7 @@ import { questionNumber, questionString } from "./readline";
 import { User } from "./user";
 
 export class Users implements CrudInterface {
-    users: UserInterface[] = [new User("1", "Admin", "admin@admin.com", "admin")];
+    users: UserInterface[] = [new User("1", "Admin", "admin@admin.com", "admin"), new User("2", "Alex", "@", "123")];
 
     generateUniqueId(): string {
         let nuevoId: string;
