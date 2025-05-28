@@ -16,44 +16,50 @@ export class ShoppingCart implements ShoppingCartInterface{
 
     constructor(private user: UserInterface) {}
 
-    addProduct(product: ProductInterface): void {
+    addProduct(product: ProductInterface, amount: number): boolean {
         const finalPrice = "getPrecioConDescuento" in product
             ? (product as any).getPrecioConDescuento()
             : product.price;
-
-        if (product.stock <= 0) {
-            console.error(`Error: No hay suficiente stock de "${product.name}"`);
-            return;
+    
+        if (amount <= 0) {
+            console.error(`Error: La cantidad debe ser mayor que cero.`);
+            return false;
         }
-
+    
+        if (product.stock < amount) {
+            console.error(`Error: No hay suficiente stock de "${product.name}". Disponibles: ${product.stock}, solicitados: ${amount}`);
+            return false;
+        }
+    
         const existing = this.items.find(item => item.productId === product.id);
-
+    
         if (existing) {
-            existing.quantity++;
+            existing.quantity += amount;
             existing.subtotal = existing.quantity * finalPrice;
         } else {
             this.items.push({
                 productId: product.id,
                 name: product.name,
                 price: finalPrice,
-                quantity: 1,
-                subtotal: finalPrice,
-                taxRate: product.taxRate // ✅ importante para la factura
+                quantity: amount,
+                subtotal: finalPrice * amount,
+                taxRate: product.taxRate
             });
         }
-
-        product.stock--;
-
+    
+        product.stock -= amount;
+    
         if (this.stockChanges.has(product.id)) {
             const reg = this.stockChanges.get(product.id)!;
-            reg.cantidad++;
+            reg.cantidad += amount;
         } else {
-            this.stockChanges.set(product.id, { product, cantidad: 1 });
+            this.stockChanges.set(product.id, { product, cantidad: amount });
         }
-
-        console.log(`Producto "${product.name}" añadido al carrito.`);
+    
+        console.log(`Producto "${product.name}" añadido al carrito (${amount} unidades). Subtotal: $${(finalPrice * amount).toFixed(2)}`);
+        return true;
     }
-
+    
     async removeProduct(): Promise<void> {
         if (this.items.length === 0) {
             console.log("El carrito está vacío.");

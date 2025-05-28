@@ -1,3 +1,4 @@
+import { error } from "node:console";
 import { categories } from "../classes/categories";
 import { order } from "../classes/orders";
 import { questionNumber, questionString } from "../classes/readline";
@@ -41,13 +42,19 @@ export async function userMenu(user: UserInterface) {
                     if (product && typeof product === "object") {
                         product.showInfo();
             
-                        const confirm = await questionString("¿Deseas añadir este producto al carrito? (s/n): ");
+                        if (product.stock >0 ) {
+                            const confirm = await questionString("¿Deseas añadir este producto al carrito? (s/n): ");
             
-                        if (confirm.toLowerCase() === "s") {
-                            cart.addProduct(product);
-                            await shoppingCartMenu(cart, categories.categories, user);
-                        } else {
-                            console.log("Producto no añadido al carrito.");
+                            if (confirm.toLowerCase() === "s") {
+                                const quantity = await questionNumber("Ingrese la cantida que desea agregar: ");
+                                let validate;
+                                validate = cart.addProduct(product, quantity);
+                                if (validate == true) {
+                                    await shoppingCartMenu(cart, categories.categories, user);
+                                }
+                            } else {
+                                console.log("Producto no añadido al carrito.");
+                            }
                         }
                     }
                 }

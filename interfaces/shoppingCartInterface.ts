@@ -3,7 +3,7 @@ import { ProductInterface } from "./productInterface";
 import { UserInterface } from "./userInterface";
 
 export interface ShoppingCartInterface {
-    addProduct(product: ProductInterface): void;
+    addProduct(product: ProductInterface, total: number): void;
     removeProduct(): Promise<void>;
     showCart(): void;
     clearCart(): void;
