@@ -18,18 +18,27 @@ export class Orders implements OrdersInterface {
         return nuevoId;
     }
 
-    async create(user: UserInterface): Promise<void> {
+    
+    async create(user: UserInterface): Promise<boolean> {
         const id = this.generateUniqueId();
         const orderstate = OrderStateEnum.PENDIENTE;
-        const country = await questionString("Ingresa el país donde será la entrega: ");
-        const city = await questionString("Ingresa la ciudad donde será la entrega: ");
-        const street = await questionString("Ingresa la calle donde será la entrega: ");
-        const house = await questionString("Ingresa el número de casa o apartamento donde será la entrega: ");
-        const address = `${street} ${house}, ${city} ${country}`;
+        const country = await questionString("Ingresa el pais donde sera la entraga: ");
+        
+        if (country.toLowerCase() === "el salvador") {
+            const city = await questionString("Ingresa la ciudad donde sera la entrega: ");
+            const street = await questionString("Ingresa la calle donde sera la entrega: ");
+            const house = await questionString("Ingresa el numero de casa o apartamento donde sera la entrega: ");
+            const address = `${street} ${house}, ${city} ${country}`;
+    
+            this.orders.push(new Order(id, user, orderstate, address));
+            console.log("Orden registrada exitosamente.");
+            return true;
+        } else {
+            console.error("Error: Solo se pueden hacer compras dentro del pais (El Salvador)");
+            return false;
+        }
 
-        this.orders.push(new Order(id, user, orderstate, address));
-        console.log("Orden registrada exitosamente.");
-    }
+    
 
     async edit(id: string): Promise<void> {
     if (this.orders.length > 0) {

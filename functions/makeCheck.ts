@@ -1,7 +1,7 @@
 import { CartItemInterface } from "../interfaces/cartItemInterface";
 import { UserInterface } from "../interfaces/userInterface";
 
-export function makeCheck(user: UserInterface, cart: CartItemInterface[]): void {
+export function makeCheck(user: UserInterface, cart: CartItemInterface[], shippingFee: number = 0): void {
     console.log("\n----- FACTURA DE COMPRA -----");
     console.log(`Cliente: ${user.name}`);
     console.log(`Correo: ${user.email}`);
@@ -22,7 +22,8 @@ export function makeCheck(user: UserInterface, cart: CartItemInterface[]): void 
         totalGeneral += subtotal;
     });
 
-    console.log(`\nTotal general: $${totalGeneral.toFixed(2)}`);
+    console.log(`\nCosto de envío: $${shippingFee.toFixed(2)}`);
+    console.log(`Total general: $${(totalGeneral + shippingFee).toFixed(2)}`);
     console.log("Factura enviada al correo: " + user.email);
     console.log("------------------------------\n");
-} 
+}
