@@ -9,9 +9,10 @@ import { order } from "./orders";
 import { PayPalPayment } from "./paypalPayment";
 import { ShoppingCartInterface } from "../interfaces/shoppingCartInterface";
 import { makeCheck } from "../functions/makeCheck";
+import { ShippingCost } from "./shippingCost";
 
 export class ShoppingCart implements ShoppingCartInterface{
-    private items: CartItemInterface[] = [];
+    public items: CartItemInterface[] = [];
     private stockChanges: Map<string, { product: ProductInterface, cantidad: number }> = new Map();
 
     constructor(private user: UserInterface) {}
@@ -115,22 +116,29 @@ export class ShoppingCart implements ShoppingCartInterface{
         console.log("Carrito vaciado y stock restaurado.");
     }
 
-
-
     async checkout(categories: CategoryInterface[], user: UserInterface): Promise<void> {
         if (this.items.length === 0) {
             console.error("Error: El carrito está vacío, no se puede procesar la compra.");
             return;
         }
     
-        // Calcular total
-        let total = 0;
+        // Calcular subtotal de productos
+        let totalProductos = 0;
         this.items.forEach(item => {
-            total += item.subtotal;
+            totalProductos += item.subtotal;
         });
+    
+        // Calcular costo de envío
+        const shipping = new ShippingCost(this.items);
+        const shippingFee = shipping.getShippingCost();
     
         // Mostrar carrito
         this.showCart();
+    
+        // Mostrar detalle de envío
+        console.log(`\nCosto de envío: $${shippingFee}`);
+        const totalFinal = totalProductos + shippingFee;
+        console.log(`Total a pagar (con envío): $${totalFinal}\n`);
     
         // Selección de método de pago
         console.log("Seleccione el método de pago:");
@@ -152,11 +160,11 @@ export class ShoppingCart implements ShoppingCartInterface{
                 return;
         }
     
-        const pagoExitoso = await paymentMethod.processPayment(total);
+        const pagoExitoso = await paymentMethod.processPayment(totalFinal); // Aquí usamos el total final
     
         if (pagoExitoso) {
             await order.create(user);
-            makeCheck(user, this.items); // 🧾 Genera y muestra factura
+            makeCheck(user, this.items, shippingFee); // Genera y muestra factura
     
             this.stockChanges.clear(); // Confirmar cambios
             this.items = [];
@@ -166,6 +174,7 @@ export class ShoppingCart implements ShoppingCartInterface{
             this.clearCart(); // Revertir
         }
     }
+
     
 
 }
