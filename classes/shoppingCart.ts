@@ -140,6 +140,14 @@ export class ShoppingCart implements ShoppingCartInterface{
         const totalFinal = totalProductos + shippingFee;
         console.log(`Total a pagar (con envío): $${totalFinal}\n`);
     
+        // Confirmación del cliente
+        console.log("¿Está seguro de continuar con la compra?\n1. Sí\n2. No");
+        const confirmacion = await questionNumber("Opción: ");
+        if (confirmacion !== 1) {
+            console.log("Compra cancelada por el usuario.");
+            return;
+        }
+    
         // Selección de método de pago
         console.log("Seleccione el método de pago:");
         console.log("1. Tarjeta de crédito/débito");
@@ -160,12 +168,16 @@ export class ShoppingCart implements ShoppingCartInterface{
                 return;
         }
     
-        const pagoExitoso = await paymentMethod.processPayment(totalFinal); // Aquí usamos el total final
+        const pagoExitoso = await paymentMethod.processPayment(totalFinal); // Usamos total con envío
     
         if (pagoExitoso) {
-            await order.create(user);
-            makeCheck(user, this.items, shippingFee); // Genera y muestra factura
+            const ordenExitosa = await order.create(user);
+            if (!ordenExitosa) {
+                console.log("No se pudo completar la compra por restricciones de envío.");
+                return;
+            }
     
+            makeCheck(user, this.items, shippingFee); // Genera y muestra factura con envío
             this.stockChanges.clear(); // Confirmar cambios
             this.items = [];
             console.log("Compra finalizada con éxito.");
@@ -174,7 +186,4 @@ export class ShoppingCart implements ShoppingCartInterface{
             this.clearCart(); // Revertir
         }
     }
-
-    
-
 }

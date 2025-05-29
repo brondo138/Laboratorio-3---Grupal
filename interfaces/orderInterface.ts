@@ -12,7 +12,7 @@ export interface OrderInterface{
 export interface OrdersInterface{
     orders: OrderInterface[];
     generateUniqueId(): string;
-    create(user: UserInterface): Promise<void>;
+    create(user: UserInterface): Promise<boolean>;
     edit(id: string): Promise<void>;
     showAll(): void;
     delete(id: string): void;
