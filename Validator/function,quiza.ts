@@ -1,3 +1,4 @@
+import { PaypalValidator } from "./classValidator/paypalValidator";
 import { StockValidator } from "./classValidator/stockValidator";
 import { EmailValidator, PasswordValidator, UserValidator } from "./classValidator/UserValidator";
 
@@ -8,4 +9,5 @@ userChain.setnext(new EmailValidator()).setnext(new PasswordValidator())
 
 console.log(userChain.handle({username:``,email:`hohlhohoh`, password:`` }))
 
-const paymentChain = new payma
+const paymentChain = new PaypalValidator
+paymentChain.setnext(new)
