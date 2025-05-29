@@ -1,8 +1,7 @@
-import { CreditCardPayment } from "../../classes/creditCatdPayment";
 import { BaseValidator } from "../BaseValidator";
 
 export class CreditCardValidator extends BaseValidator{
-    public handle(request: any): string {
+    public handle(request: any): string|null {
         if(request === (!/^\d{13,19}$/.test(request)))
             return `El numero de tarjeta debe tener entre 13 y 19 digitos`
 
@@ -11,7 +10,7 @@ export class CreditCardValidator extends BaseValidator{
 }
 
 export class CreditCardTypeValidator extends BaseValidator {
-    public handle(request: any): string{
+    public handle(request: any): string|null{
         if (!/^[456]/.test(request)) 
             return "Número de tarjeta no reconocido como válido (solo Visa, MasterCard, Discover).";
         
@@ -19,7 +18,7 @@ export class CreditCardTypeValidator extends BaseValidator {
     }
 }
 export class ExpiryFormatValidator extends BaseValidator {
-    public handle(request: any): string{
+    public handle(request: any): string|null{
         let match = request.match(/^(\d{2})\/(\d{2})$/);
         if (!match) {
             return "Formato invalido. Use MM/AA.";
@@ -29,7 +28,7 @@ export class ExpiryFormatValidator extends BaseValidator {
 }
 
 export class ExpiryDateValidator extends BaseValidator {
-    public handle(request: any): string{
+    public handle(request: any): string | null{
         const match = request.match(/^(\d{2})\/(\d{2})$/);
         
         const month = parseInt(match[1]);
@@ -50,7 +49,7 @@ export class ExpiryDateValidator extends BaseValidator {
     }
 }
 export class CVVFormatValidator extends BaseValidator {
-    public handle(request: any): string{
+    public handle(request: any): string|null{
         if (!/^\d{3,4}$/.test(request)) {
             return "El CVV debe tener 3 o 4 dígitos numéricos.";
         }

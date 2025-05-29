@@ -10,7 +10,7 @@ export class CreditCardPayment implements PaymentMethodInterface {
 
         //cadena para los numeros de la tarjeta
         const creditCartChain = new CreditCardValidator()
-        creditCartChain.setnext(new CreditCardTypeValidator())
+        creditCartChain.setNext(new CreditCardTypeValidator())
 
         do {
             cardNumber = await questionString("Ingrese su numero de tarjeta: ");
@@ -24,7 +24,7 @@ export class CreditCardPayment implements PaymentMethodInterface {
 
         //cadena para la fecha
         const expiryChain = new ExpiryFormatValidator()
-        expiryChain.setnext(new ExpiryDateValidator)
+        expiryChain.setNext(new ExpiryDateValidator)
 
         do {
             expiry = await questionString("Ingrese la fecha de vencimiento (MM/AA): ");

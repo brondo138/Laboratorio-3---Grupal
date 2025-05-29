@@ -1,4 +1,4 @@
 export interface IValidator{
-    setnext(handler:IValidator):IValidator;
-    handle(request:any):string;
+    setNext(handler:IValidator):IValidator;
+    handle(request:any):string | null ;
 }
