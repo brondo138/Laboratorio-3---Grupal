@@ -38,7 +38,7 @@ export class Orders implements OrdersInterface {
             return false;
         }
 
-    
+}
 
     async edit(id: string): Promise<void> {
     if (this.orders.length > 0) {
