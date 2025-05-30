@@ -1,6 +1,7 @@
 import { generateID } from "../functions/generateID";
 import { CrudInterface } from "../interfaces/crudInterface";
 import { UserInterface } from "../interfaces/userInterface";
+import { EmailValidator, PasswordValidator, UserValidator } from "../Validator/classValidator/UserValidator";
 import { questionNumber, questionString } from "./readline";
 import { User } from "./user";
 
@@ -23,42 +24,34 @@ export class Users implements CrudInterface {
     async create(): Promise<void> {
         const id = this.generateUniqueId();
 
+        //cadena 
+        const userChain = new UserValidator()
+        userChain.setNext(new EmailValidator()).setNext(new PasswordValidator())
+
         let name: string;
-        do {
-            name = await questionString("\nIngresa tu nombre de usuario: ");
-            if (!name.trim()) {
-                console.error("Error: El nombre de usuario no puede estar vacío.");
-            }
-        } while (!name.trim());
-
         let email: string;
-        let emailValido = false;
-        do {
-            email = await questionString("Ingresa tu correo electrónico: ");
-
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                console.error("Error: Formato de correo electrónico inválido.");
-                continue;
-            }
-
-            if (this.users.some(user => user.email === email)) {
-                console.error("Error: Ya existe un usuario registrado con ese correo electrónico.");
-                continue;
-            }
-
-            emailValido = true;
-        } while (!emailValido);
-
         let password: string;
         do {
+            name = await questionString("\nIngresa tu nombre de usuario: ");
+            email = await questionString("Ingresa tu correo electrónico: ");
             password = await questionString("Ingresa tu contraseña (mínimo 8 caracteres, con mayúscula, minúscula y número): ");
-            if (!this.isStrongPassword(password)) {
-                console.error("Error: La contraseña debe tener al menos 8 caracteres, incluyendo una mayúscula, una minúscula y un número.");
+
+            if (this.users.some(user => user.email === email)) {
+                console.error("Error: Ya existe un usuario registrado con ese correo electronico.");
+                continue;
             }
-        } while (!this.isStrongPassword(password));
+            const error = userChain.handle({ username: name, email, password });
+            if (error) {
+                console.error("Error:", error);
+                continue;
+            }
+            break;
+        } while (true);
+
 
         this.users.push(new User(id, name, email, password));
         console.log(`\nUsuario ${name} registrado exitosamente\n`);
+
     }
 
     async edit(id: string): Promise<void> {
@@ -89,10 +82,13 @@ export class Users implements CrudInterface {
                 let newName: string;
                 do {
                     newName = await questionString("Ingrese el nuevo nombre de usuario: ");
-                    if (!newName.trim()) {
-                        console.error("Error: El nombre no puede estar vacío.");
+                    const nameError = new UserValidator().handle({ username: newName });
+                    if (nameError) {
+                        console.error("Error:", nameError);
+                    } else {
+                        break;
                     }
-                } while (!newName.trim());
+                } while (true);
 
                 user.name = newName;
                 console.log("Nombre actualizado correctamente.");

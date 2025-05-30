@@ -4,10 +4,10 @@ import { EmailValidator, PasswordValidator, UserValidator } from "./classValidat
 
 
 const userChain = new UserValidator()
-userChain.setnext(new EmailValidator()).setnext(new PasswordValidator())
+userChain.setNext(new EmailValidator()).setNext(new PasswordValidator())
 //aqui solo esta usando la cadena de usuario y el email para otras cadenas hay que crear otra
 
 console.log(userChain.handle({username:``,email:`hohlhohoh`, password:`` }))
 
 const paymentChain = new PaypalValidator
-paymentChain.setnext(new)
+paymentChain.setNext(new)
