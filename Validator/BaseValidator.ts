@@ -1,4 +1,4 @@
-import { IValidator } from "./chainInterface";
+import { IValidator } from "../interfaces/chainInterface";
 
 export abstract class BaseValidator implements IValidator{
     private next :IValidator |null = null;
