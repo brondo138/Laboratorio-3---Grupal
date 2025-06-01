@@ -8,6 +8,6 @@ export interface ProductInterface {
     offert: number;
     taxRate: number;
     showInfo(): void;
-    getPrecioBase(): number;   
-    getImpuesto(): number;       
+    getBasePrice(): number;   
+    getTax(): number;       
 }

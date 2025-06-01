@@ -8,7 +8,7 @@ export async function login() {
     const email: string = await questionString("Ingrese su correo electronico: ");
     const password: string = await questionString("Ingrese su contraseña: ");
 
-    const user = users.users.find(user => user.email === email);//Buscar email
+    const user = users.users.find(user => user.email === email);
 
     if (user) {
         if (user.password === password) {

@@ -11,11 +11,11 @@ export class Categories implements CategoriesInterface{
         return [ropa];
     })();
     generateUniqueId(): string {
-        let nuevoId: string;
+        let newId: string;
         do {
-            nuevoId = generateID();
-        } while (this.categories.some(category => category.id === nuevoId));
-        return nuevoId;
+            newId = generateID();
+        } while (this.categories.some(category => category.id === newId));
+        return newId;
     }
     
     async create(): Promise<void> {

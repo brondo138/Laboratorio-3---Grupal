@@ -8,7 +8,7 @@ export class CreditCardPayment implements PaymentMethodInterface {
         let expiry: string;
         let cvv: string;
 
-        //cadena para los numeros de la tarjeta
+        
         const creditCartChain = new CreditCardValidator()
         creditCartChain.setNext(new CreditCardTypeValidator())
 
@@ -22,7 +22,7 @@ export class CreditCardPayment implements PaymentMethodInterface {
             break;
         } while (true);
 
-        //cadena para la fecha
+        
         const expiryChain = new ExpiryFormatValidator()
         expiryChain.setNext(new ExpiryDateValidator)
 
@@ -37,7 +37,7 @@ export class CreditCardPayment implements PaymentMethodInterface {
             break;
         } while (true);
 
-        //cadena para el cvv
+        
         const cvvChain = new CVVFormatValidator()
         do {
             cvv = await questionString("Ingrese el código de seguridad (CVV): ");

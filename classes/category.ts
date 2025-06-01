@@ -80,7 +80,7 @@ export class Category implements CategoryInterface{
                     console.log("Producto actualizado correctamente");
                     break;
                 case 2:
-                    const newPrice = await questionNumber(`Ingrese el nuevo precio base del producto (Actual $${product.getPrecioBase().toFixed(2)}): `);
+                    const newPrice = await questionNumber(`Ingrese el nuevo precio base del producto (Actual $${product.getBasePrice().toFixed(2)}): `);
                     if (isNaN(newPrice) || newPrice < 0) {
                         console.error("Error: Ingrese un valor válido para el precio del producto");
                         return;
@@ -93,13 +93,13 @@ export class Category implements CategoryInterface{
                     }
                 
                     // Recalcular precio final con impuesto
-                    const nuevoImpuesto = newPrice * (newTaxRate / 100);
-                    const nuevoPrecioFinal = newPrice + nuevoImpuesto;
+                    const newTax = newPrice * (newTaxRate / 100);
+                    const newFinalPrice = newPrice + newTax;
                 
                     // Actualizar valores
                     (product as any).precioBase = newPrice;
-                    (product as any).impuesto = nuevoImpuesto;
-                    product.price = nuevoPrecioFinal;
+                    (product as any).impuesto = newTax;
+                    product.price = newFinalPrice;
                     product.taxRate = newTaxRate;
                 
                     console.log("Precio e impuesto actualizados correctamente");

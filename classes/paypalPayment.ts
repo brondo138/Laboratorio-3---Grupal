@@ -5,7 +5,7 @@ import { questionString } from "./readline";
 export class PayPalPayment implements PaymentMethodInterface {
     async processPayment(total: number): Promise<boolean> {
         do {
-        const payPalChain = new PaypalValidator() //cadena
+        const payPalChain = new PaypalValidator() 
         payPalChain.setNext(new PaypalPasswordValidator())
         const email = await questionString("Ingrese su correo de PayPal: ");
         const password = await questionString("Ingrese su contraseña de PayPal: ");
